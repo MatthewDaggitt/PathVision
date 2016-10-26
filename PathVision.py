@@ -259,6 +259,8 @@ class App(tkinter.ttk.Frame):
 			if A.name == data['algebra']:
 				self.setAlgebra(A, False)
 
+		self.display.draw()
+
 
 
 if __name__ == '__main__':
