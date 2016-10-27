@@ -2,10 +2,10 @@ import tkinter
 
 from theory.displayAlgebra import examples
 
-class Controls(tkinter.ttk.Frame):
+class Controls(tkinter.Frame):
 
 	def __init__(self, parent):
-		tkinter.ttk.Frame.__init__(self, parent)
+		tkinter.Frame.__init__(self, parent)
 		self.parent = parent
 		
 		padding = 10

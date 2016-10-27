@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 
 from settings import *
 
-class Display(tkinter.ttk.Frame):
+class Display(tkinter.Frame):
 
-	def __init__(self, parent):
-		tkinter.ttk.Frame.__init__(self, parent)
+	def __init__(self, parent, *args, **kwargs):
+		tkinter.Frame.__init__(self, args, kwargs)
+		
 		self.parent = parent
 
 		## Visual set up
@@ -28,10 +29,12 @@ class Display(tkinter.ttk.Frame):
 		
 		self.canvas = FigureCanvasTkAgg(self.figure, master=self)
 		self.canvas.show()
-		self.canvas.get_tk_widget().grid(row=0,column=0,sticky="NEW")
+		self.canvas.get_tk_widget().pack(fill=tkinter.BOTH, expand=True)
 
-		self.navigation = tkinter.ttk.Frame(self)
-		self.navigation.grid(row=1,column=0, pady=(10,0))
+
+
+		self.navigation = tkinter.Frame(self, bg="red")
+		self.navigation.pack()
 
 		self.startB = tkinter.Button(self.navigation, text="<<", command=self.parent.moveToStart)
 		self.startB.grid(row=0,column=0)
@@ -52,6 +55,8 @@ class Display(tkinter.ttk.Frame):
 		self.endB.grid(row=0,column=4)
 		self.endB.configure(state=tkinter.DISABLED)
 
+
+
 		## Callbacks
 
 		self.figure.canvas.callbacks.connect('button_press_event', self._mouseDown)
@@ -65,7 +70,6 @@ class Display(tkinter.ttk.Frame):
 		self.dragTarget = None;
 		self.dragged = False;
 		self.selectTarget = None;
-
 
 	#############
 	## Getters ##
@@ -162,7 +166,7 @@ class Display(tkinter.ttk.Frame):
 			self.parent.moveNode(self.dragTarget, event.xdata, event.ydata)
 			self.dragged = True;
 			self.draw()
-	
+			
 
 	#############
 	## Actions ##
@@ -240,6 +244,3 @@ class Display(tkinter.ttk.Frame):
 				return -1
 		else:
 			return 1
-
-
-			

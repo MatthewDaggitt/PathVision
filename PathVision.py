@@ -28,22 +28,19 @@ for theme in desiredOrder:
 
 ####### Settings ###########
 
-class App(tkinter.ttk.Frame):
+class App(tkinter.Frame):
 
 	def __init__(self):
-		tkinter.ttk.Frame.__init__(self)
+		tkinter.Frame.__init__(self)
 
 		self.master.title("PathVision")
 		self.master.protocol("WM_DELETE_WINDOW", self.on_close)
 
 		self.display = Display(self)
-		self.display.grid(row=0, column=0, padx=(15,5), pady=15)
+		self.display.pack(fill=tkinter.BOTH, expand=True, side="left", padx=(15,5), pady=15)#fill=BOTH, expand=1
 
 		self.controls = Controls(self)
-		self.controls.grid(row=0, column=1, padx=(5,15), pady=5)
-
-		self.bind("<Configure>", self.on_resize)
-
+		self.controls.pack(fill=tkinter.Y, side="right", padx=(5,15), pady=5)
 
 		self.AG = graph.AugmentedGraph()
 		self.A = None
@@ -54,24 +51,14 @@ class App(tkinter.ttk.Frame):
 		self.setWithPaths(True)
 		self._load("examples/example1.pv")
 
-		"""
 		self.setWithPaths(True)
 		self.stopCalculating()
 		self.setAlgebra(displayAlgebra.maxMin, True)
-		"""
 
 		self.pack()
 		tkinter.mainloop()
 
 	# Events
-
-	def on_resize(self, event):
-		self.display.grid_forget()
-		self.controls.grid_forget()
-
-		self.display.grid(row=0, column=0, padx=(15,5), pady=15)
-		self.controls.grid(row=0, column=1, padx=(5,15), pady=5)
-		#self.pack()
 
 	def on_close(self):
 		self.destroy()
