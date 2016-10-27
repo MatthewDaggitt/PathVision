@@ -58,14 +58,13 @@ class App(tkinter.Frame):
 		self.pack()
 		tkinter.mainloop()
 
-	# Events
+
+
+	# Window events
 
 	def on_close(self):
 		self.destroy()
 		quit()
-
-
-
 
 
 	# Graph adjustments

@@ -4,7 +4,6 @@ import networkx as nx
 class AugmentedGraph():
 
 	def __init__(self):
-		self._nodeCounter = 5
 		self.G = nx.DiGraph()
 		self.G.add_node(0)
 
@@ -17,8 +16,7 @@ class AugmentedGraph():
 	# Node operations
 
 	def addNode(self, x, y):
-		self._nodeCounter += 1
-		n = self._nodeCounter
+		n = len(self.G)
 		self.G.add_node(n)
 		self.pos[n] = [x, y]
 
