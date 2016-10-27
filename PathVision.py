@@ -49,11 +49,13 @@ class App(tkinter.Frame):
 		self.time = None
 
 		self.setWithPaths(True)
-		self._load("examples/example1.pv")
+		self._load("examples/counterexample2.pv")
 
+		"""
 		self.setWithPaths(True)
 		self.stopCalculating()
 		self.setAlgebra(displayAlgebra.maxMin, True)
+		"""
 
 		self.pack()
 		tkinter.mainloop()
@@ -203,7 +205,7 @@ class App(tkinter.Frame):
 
 	def moveForwards(self):
 		self.time += 1
-		if self.time == len(self.states):
+		if self.time == len(self.states) - 1:
 			self.states.append(bellmanFord.iterate(self.CA.A, self.states[-1], self.idM, self.adM))
 		self.timeChanged()
 

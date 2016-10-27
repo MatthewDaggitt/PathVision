@@ -22,7 +22,7 @@ class Display(tkinter.Frame):
 
 		## Visual set up
 
-		self.figure = plt.figure(facecolor="white", figsize=(15,10))
+		self.figure = plt.figure(facecolor="white")
 		self.axes = self.figure.add_subplot(111)
 		plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
 		plt.axis('off')
@@ -30,8 +30,6 @@ class Display(tkinter.Frame):
 		self.canvas = FigureCanvasTkAgg(self.figure, master=self)
 		self.canvas.show()
 		self.canvas.get_tk_widget().pack(fill=tkinter.BOTH, expand=True)
-
-
 
 		self.navigation = tkinter.Frame(self, bg="red")
 		self.navigation.pack()
@@ -76,6 +74,7 @@ class Display(tkinter.Frame):
 	#############
 
 	def _findNearestNode(self, x, y):
+		#print(x, y, self.canvas.get_tk_widget().winfo_width(), self.canvas.get_tk_widget().winfo_height())
 		return min([((math.sqrt((x2-x)**2 + (y2-y)**2)), n) for n, (x2, y2) in self.parent.AG.pos.items()])
 
 	def _findNearestEdge(self, x0, y0):
@@ -210,7 +209,7 @@ class Display(tkinter.Frame):
 
 	def draw(self):
 		self.axes.cla()
-		plt.axis('off')
+		#plt.axis('off')
 
 		edgeLabels = nx.get_edge_attributes(self.parent.AG.G, 'weight')
 		nx.draw_networkx(self.parent.AG.G, self.parent.AG.pos, ax=self.axes, **self.parent.AG.getKwargs())
