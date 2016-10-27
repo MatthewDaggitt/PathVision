@@ -52,7 +52,7 @@ class App(tkinter.ttk.Frame):
 		self.time = None
 
 		self.setWithPaths(True)
-		self._load("examples/test.pv")
+		self._load("examples/example1.pv")
 
 		"""
 		self.setWithPaths(True)
@@ -105,8 +105,12 @@ class App(tkinter.ttk.Frame):
 
 	def setSource(self, n):
 		self.AG.setSource(n)
-		self.display.draw()
 
+		if self.time:
+			self.time = 0
+			self.timeChanged()
+
+		self.display.draw()
 
 	def addEdge(self, e):
 		self.AG.addEdge(e, self.A.defaultEdge)
@@ -172,6 +176,9 @@ class App(tkinter.ttk.Frame):
 
 	# Calculations
 
+	def stateAt(self, time):
+		return [row[self.AG.sourceNode] for row in self.states[time]]
+
 	def startCalculating(self):
 		nodes = self.AG.G.nodes()
 		n = len(nodes)
@@ -183,17 +190,17 @@ class App(tkinter.ttk.Frame):
 			self.idM = [[self.A.A.one if i == j else self.A.A.zero for j in range(n)] for i in range(n)]
 			self.adM = [[self.AG.G[i][j]['weight'] if j in self.AG.G[i] else self.A.A.zero for j in nodes] for i in nodes]
 
-		
-
-		self.states = [self.idM, bellmanFord.iterate(self.CA.A, self.idM, self.idM, self.adM)]
-		self.time = 0
-
 		i = 2
-		while i < n:
-			self.states.append(bellmanFord.iterate(self.CA.A, self.states[-1], self.idM, self.adM))
+		self.states = [self.idM, bellmanFord.iterate(self.CA.A, self.idM, self.idM, self.adM)]
+		while i <= n and self.states[-1] != self.states[-2]:
+			newState = bellmanFord.iterate(self.CA.A, self.states[-1], self.idM, self.adM)
+			self.states.append(newState)
 			i += 1
 
+		self.time = 0
+		self.timeChanged()
 		self.display.startedCalculating()
+
 
 	def stopCalculating(self):
 		self.states = []
@@ -202,22 +209,37 @@ class App(tkinter.ttk.Frame):
 
 	def moveToStart(self):
 		self.time = 0
-		self.display.timeChanged(self.time, True)
+		self.timeChanged()
 
 	def moveBack(self):
 		self.time -= 1
-		self.display.timeChanged(self.time, True)
+		self.timeChanged()
 
 	def moveForwards(self):
 		self.time += 1
 		if self.time == len(self.states):
 			self.states.append(bellmanFord.iterate(self.CA.A, self.states[-1], self.idM, self.adM))
-		self.display.timeChanged(self.time, self.time+1 < len(self.states) or self.states[-1] != self.states[-2])
+		self.timeChanged()
 
 	def moveToEnd(self):
-		self.time = len(self.states)
-		self.display.timeChanged(self.time, self.time+1 < len(self.states))
+		i = 0
+		while i + 1 < len(self.states):
+			if self.stateAt(i) == self.stateAt(i+1):
+				self.time = i
+				break
+			i += 1
 
+		self.timeChanged()
+
+	def timeChanged(self):
+
+		convergedNow = self.stateAt(self.time) == self.stateAt(self.time+1)
+		convergedThen = self.stateAt(-2) == self.stateAt(-1)
+
+		canProceed = not convergedNow
+		canProceedToEnd = canProceed and convergedThen
+
+		self.display.timeChanged(self.time, canProceed, canProceedToEnd)
 
 
 
@@ -262,6 +284,10 @@ class App(tkinter.ttk.Frame):
 		self.display.draw()
 
 
+	def _printState(self, state):
+		print("")
+		for row in state:
+			print(row)
 
 if __name__ == '__main__':
 	App()

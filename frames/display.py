@@ -171,7 +171,6 @@ class Display(tkinter.ttk.Frame):
 
 	def startedCalculating(self):
 		self.calculateB.configure(text="Stop", command=self.parent.stopCalculating)
-		self.timeChanged(0, True)
 
 	def stoppedCalculating(self):
 		self.calculateB.configure(text="Start", command=self.parent.startCalculating)
@@ -185,17 +184,22 @@ class Display(tkinter.ttk.Frame):
 		self.draw()
 
 
-	def timeChanged(self, t, canProceed):
+	def timeChanged(self, t, canProceed, canProceedToEnd):
 
 		bState = tkinter.ACTIVE if t else tkinter.DISABLED
 		fState = tkinter.ACTIVE if canProceed else tkinter.DISABLED
+		eState = tkinter.ACTIVE if canProceedToEnd else tkinter.DISABLED
+
+		title = "t = " + str(t)
+		if not canProceed:
+			title += " (CONVERGED)"
 
 		self.startB.configure(state=bState)
 		self.backB.configure(state=bState)
 		self.forwardsB.configure(state=fState)
-		self.endB.configure(state=fState)
+		self.endB.configure(state=eState)
 
-		self.figure.suptitle("t = " + str(t))
+		self.figure.suptitle(title)
 		self.draw()
 
 	# Drawing

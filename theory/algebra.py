@@ -81,5 +81,31 @@ class Algebra():
 		return Algebra(p_add, p_times, [], None)
 
 
+
+
+## Examples
+
+def ftimes(f, a, _):
+	if f == "c":
+		return a
+	if f[:3] == "inc":
+		return min(5, a + int(f[3]))
+	if f[0] == "s":
+		i1 = int(f[1])
+		i2 = int(f[2])
+
+		if a == i1:
+			return i2+1
+		if a == i2:
+			return i2
+		return a
+	if f == "0t4":
+		if a == 0:
+			return 4
+		return a
+
+
+
 minPlus = Algebra(min, lambda x,y,_ : x + y, float('inf'), 0)
 maxMin = Algebra(max, lambda x,y,_ : min(x,y), 0, float('inf'))
+fRing = Algebra(min, ftimes, 5, 0)
