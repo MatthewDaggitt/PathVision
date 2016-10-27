@@ -237,7 +237,7 @@ class InformationControls(tkinter.ttk.LabelFrame):
 
 		controlStr = "Add node: left click on empty space\n\n"
 		controlStr += "Remove node: right click on node\n\n"
-		controlStr += "Add edge: left click on source followed by the destination\n\n"
+		controlStr += "Add edge: left click on destination followed by the source\n\n"
 		controlStr += "Remove edge: right click on edge\n\n"
 		controlStr += "Change edge value: left click on edge and type\n\n"
 		controlStr += "Change destination: double left click on new destination node"
