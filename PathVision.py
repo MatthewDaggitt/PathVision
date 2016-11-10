@@ -54,7 +54,7 @@ class App(tkinter.Frame):
 
 
 		# Load default example and run
-		self._load("examples/minimal_counterexample.pv")
+		self._load("examples/non_linear_counterexample.pv")
 
 		self.master.protocol("WM_DELETE_WINDOW", self.on_close)
 		tkinter.mainloop()
