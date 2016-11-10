@@ -90,14 +90,21 @@ class AlgebraControls(tkinter.Frame):
 		self.withPathsV = tkinter.IntVar()
 		self.withPathsL = tkinter.Label(self, text="Track paths:")
 		self.withPathsChB = tkinter.Checkbutton(self, variable=self.withPathsV)
-		self.withPathsChB.grid(row=1,column=0)
 		self.withPathsV.tid = self.withPathsV.trace("w", self.setWithPaths)
+
+		self.abbreviatePathsV = tkinter.IntVar()
+		self.abbreviatePathsL = tkinter.Label(self, text="Abbreviate paths:")
+		self.abbreviatePathsChB = tkinter.Checkbutton(self, variable=self.abbreviatePathsV)
+		self.abbreviatePathsV.tid = self.abbreviatePathsV.trace("w", self.setAbbreviatePaths)
+
 
 		self.headerL.grid(row=0,column=0,sticky="W")
 		self.algebraL.grid(row=1,column=0,sticky="W")
 		self.algebraCB.grid(row=1,column=1,sticky="EW",padx=(7,5))
 		self.withPathsL.grid(row=2,column=0,sticky="W")
 		self.withPathsChB.grid(row=2,column=1,sticky="W")
+		self.abbreviatePathsL.grid(row=3,column=0,sticky="W")
+		self.abbreviatePathsChB.grid(row=3,column=1,sticky="W")
 
 	def setAlgebra(self, a, b, c):
 		v = self.algebraV.get()
@@ -107,6 +114,10 @@ class AlgebraControls(tkinter.Frame):
 
 	def setWithPaths(self, a, b, c):
 		self.app.setWithPaths(bool(self.withPathsV.get()))
+
+	def setAbbreviatePaths(self, a, b, c):
+		self.app.setAbbreviatePaths(bool(self.abbreviatePathsV.get()))
+
 
 	def algebraChanged(self, A):
 		self.algebraV.trace_vdelete("w", self.algebraV.tid)

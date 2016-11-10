@@ -51,7 +51,7 @@ class App(tkinter.Frame):
 		self.CA = None
 		self.states = None
 		self.time = None
-
+		self.abbreviatePaths = False
 
 		# Load default example and run
 		self._load("examples/non_linear_counterexample.pv")
@@ -172,6 +172,9 @@ class App(tkinter.Frame):
 		if self.A:
 			self.CA = displayAlgebra.DisplayAlgebra.trackPaths(self.A) if self.withPaths else self.A
 
+	def setAbbreviatePaths(self, v):
+		self.abbreviatePaths = v
+		self.draw()
 
 
 	############################
@@ -355,10 +358,13 @@ class App(tkinter.Frame):
 
 		x, p = v
 
-		if len(p) <= 3:
+		if self.abbreviatePaths and len(p) > 3:
+			return "(" + str(x) + ", [" + str(p[0]) + "," + str(p[1]) + ",...," + str(p[-1]) + "])"
+		else:
 			return v
+			
 
-		return "(" + str(x) + ", [" + str(p[0]) + "," + str(p[1]) + ",...," + str(p[-1]) + "])"
+		
 
 
 	def draw(self):
