@@ -2,7 +2,6 @@
 import functools
 
 def iterate(algebra, state, idM, adM):
-
 	n = len(state)
 	newState = [[algebra.zero for _ in range(n)] for _ in range(n)]
 
@@ -12,3 +11,9 @@ def iterate(algebra, state, idM, adM):
 			newState[i][j] = functools.reduce(algebra.plus, candidateRoutes)
 
 	return newState
+
+def solve(algebra, state, idM, adM, limit=1000):
+	states = [state, iterate(algebra, state, idM, adM)]
+	while len(states) < limit and states[-1] != states[-2]:
+		states.append(iterate(algebra, states[-1], idM, adM))
+	return states

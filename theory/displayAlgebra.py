@@ -1,23 +1,18 @@
-from theory.algebra import *
+import random
+import re
 
-def isNumber(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-    except TypeError:
-        return False
+from theory.algebra import *
 
 class DisplayAlgebra():
 
-	def __init__(self, A, name, defaultEdge, validate, parse, componentAlgebras):
+	def __init__(self, A, name, defaultEdge, validate, parse, componentAlgebras, randomEdge):
 		self.A = A
 		self.name = name
 		self.defaultEdge = defaultEdge
 		self.validate = validate
 		self.parse = parse
 		self.components = componentAlgebras
+		self.randomEdge = randomEdge
 
 	def __repr__(self):
 		return self.name
@@ -32,7 +27,8 @@ class DisplayAlgebra():
 			[DA1.defaultEdge , DA2.defaultEdge],
 			lambda v : DA1.validate(v[0]) and DA2.validate(v[1]),
 			lambda v : (parse(v[0]) , parse(v[1])),
-			[DA1, DA2]
+			[DA1, DA2],
+			lambda : (DA1.randomEdge(), DA2.randomEdge())
 		)
 
 
@@ -44,25 +40,83 @@ class DisplayAlgebra():
 			DA.defaultEdge,
 			DA.validate,
 			DA.parse,
-			[DA]
+			[DA],
+			DA.randomEdge
 		)
 
 
+# Verification functions
+
+def isFloat(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+    except TypeError:
+        return False
+
+def isInt(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+    except TypeError:
+        return False
+
 def fVerify(f):
+
+	def matchC(f):
+		return re.match("c\Z", f)
+
+	def matchR(f):
+		return re.match("r\d+\Z", f) and int(f[1:]) <= finf
+
+	def matchI(f):
+		return re.match("i\d+\Z", f) and int(f[1:]) <= finf
+
+	def matchT(f):
+		return re.match("(\d+)t(\d+)\Z", f) and int(f[:f.index("t")]) <= int(f[f.index("t")+1:]) <= finf
+
 	if f:
-		if f == "c" or f == "0t4":
+		ps = f.split(":")
+		if matchC(ps[-1]) or matchR(ps[-1]) or matchI(ps[-1]):
+			for p in ps[:-1]:
+				if not matchT(p):
+					return False
 			return True
-		if f[:3] == "inc" and len(f) == 4:
-			return isNumber(f[3])
-		if f[0] == "s" and len(f) == 3:
-			return isNumber(f[1]) and isNumber(f[2])
+
 	return False
 
+def fRandom():
 
-minPlus = DisplayAlgebra(minPlus, "(N, min, +)", 1, isNumber, int, [])
-maxMin = DisplayAlgebra(maxMin, "(N, max, min)", 2, isNumber, int, [])
+	r = random.randrange(5)
+	
+	if r == 0:
+		return "c"
+	if r == 1:
+		return "i" + str(random.randrange(1,5))
+	if r == 2:
+		r2 = random.randrange(2)
+		return str(r2) + "t" + str(random.randrange(r2+1,5)) + ":c"
+	return None
+
+def intRandom():
+	r = random.randrange(20)
+
+	if r < 10:
+		return r
+	else:
+		return None
+
+
+# Example display algebras
+
+minPlus = DisplayAlgebra(minPlus, "(N, min, +)", 1, isInt, int, [], intRandom)
+maxMin = DisplayAlgebra(maxMin, "(N, max, min)", 2, isInt, int, [], intRandom)
 shortestWidest = DisplayAlgebra.lexicographicProduct(maxMin, minPlus)
-fRing = DisplayAlgebra(fRing, "F-custom", "c", fVerify, lambda x : x, [])
+fRing = DisplayAlgebra(fRing, "F-custom", "c", fVerify, lambda x : x, [], fRandom)
 
 examples = [
 	minPlus,

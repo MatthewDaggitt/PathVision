@@ -70,8 +70,11 @@ class Algebra():
 				return None
 
 			x, p = v
-			
 			if i in p:
+				return None
+
+			# REMOVE!!!!
+			if A.times(e,x,i) == 100:
 				return None
 
 			return (A.times(e,x,i), [i] + p)
@@ -85,27 +88,25 @@ class Algebra():
 
 ## Examples
 
+finf = 1000
 def ftimes(f, a, _):
-	if f == "c":
-		return a
-	if f[:3] == "inc":
-		return min(5, a + int(f[3]))
-	if f[0] == "s":
-		i1 = int(f[1])
-		i2 = int(f[2])
-
-		if a == i1:
-			return i2+1
-		if a == i2:
-			return i2
-		return a
-	if f == "0t4":
-		if a == 0:
-			return 4
-		return a
-
+	for p in f.split(":"):
+		if p == "c":
+			return a
+		if p[0] == "i":
+			return min(finf, a + int(p[1:]))
+		if p[0] == "r":
+			return min(finf, max(a, int(p[1:])))
+		if "t" in p:
+			i = p.index("t")
+			i1 = int(p[:i])
+			i2 = int(p[i+1:])
+			if a == i1:
+				return i2
+		
+	print("ERROR " + f + " " + str(a))
 
 
 minPlus = Algebra(min, lambda x,y,_ : x + y, float('inf'), 0)
 maxMin = Algebra(max, lambda x,y,_ : min(x,y), 0, float('inf'))
-fRing = Algebra(min, ftimes, 5, 0)
+fRing = Algebra(min, ftimes, 1000, 0)

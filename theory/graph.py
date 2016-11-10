@@ -8,6 +8,7 @@ class AugmentedGraph():
 		self.G.add_node(0)
 
 		self.pos = nx.circular_layout(self.G)
+		self.labelled = {n:True for n in self.G}
 
 		self.selectedEdge = None
 		self.selectedNode = None
@@ -19,18 +20,20 @@ class AugmentedGraph():
 		n = len(self.G)
 		self.G.add_node(n)
 		self.pos[n] = [x, y]
+		self.labelled[n] = True
 
-		self._relabel()
+		self.relabel()
 
 	def deleteNode(self, n):
 		del self.pos[n]
+		del self.labelled[n]
 
 		self.G.remove_node(n)
 
 		if n == self.sourceNode:
 			self.sourceNode = self.G.nodes()[0]
 
-		self._relabel()
+		self.relabel()
 
 
 	def moveNode(self, n, x, y):
@@ -45,6 +48,8 @@ class AugmentedGraph():
 	def setSource(self, n):
 		self.sourceNode = n
 
+	def toggleLabel(self, n):
+		self.labelled[n] = not self.labelled[n]
 
 	# Edge operations
 
@@ -72,16 +77,25 @@ class AugmentedGraph():
 
 	# Getters
 
-	def getKwargs(self):
-		return {
-			'linewidths' : [3.0 if n == self.selectedNode else 1.0 for n in self.G.nodes()],
-			'node_color' : ["lightblue" if n == self.sourceNode else "lightgreen" for n in self.G.nodes()],
-			'width'		 : [2.0 if e == self.selectedEdge else 1.0 for e in self.G.edges()]
-		}
-
-
-	def _relabel(self):
-		mapping = {n : i for i, n in enumerate(self.G)}
+	def relabel(self, mapping=None):
+		if not mapping:
+			mapping = {n : i for i, n in enumerate(self.G)}
+		
 		self.pos = {mapping[n] : self.pos[n] for n in self.G}
+		self.labelled = {mapping[n] : self.labelled[n] for n in self.G}
 		self.sourceNode = mapping[self.sourceNode]
 		nx.relabel_nodes(self.G,mapping,False)
+
+	def loadFromAdjacencyMatrix(self, adM):
+		self.G = nx.DiGraph()
+
+		for i in range(len(adM)):
+			self.G.add_node(i)
+
+		for i in range(len(adM)):
+			for j in range(len(adM)):
+				if adM[i][j]:
+					self.G.add_edge(i, j, weight=adM[i][j])
+
+		self.sourceNode
+		self.pos = nx.circular_layout(self.G)
