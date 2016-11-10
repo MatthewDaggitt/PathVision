@@ -1,7 +1,7 @@
 import tkinter
 
 from theory.displayAlgebra import examples
-
+from frames.help import HelpText
 # Settings
 
 borderwidth=3
@@ -23,12 +23,14 @@ class GeneralControls(tkinter.Frame):
 		self._edgeControls = EdgeControls(self, app)
 		self._edgeControls.grid(row=1, column=0, sticky="EW", pady=padding)
 
-		self._informationControls = InformationControls(self)
-		self._informationControls.grid(row=2, column=0, sticky="EW", pady=padding)
-
 		self._searchControls = SearchControls(self, app)
-		self._searchControls.grid(row=3, column=0, sticky="EW", pady=padding)
+		self._searchControls.grid(row=2, column=0, sticky="EW", pady=padding)
 
+		self._helpB = tkinter.Button(self, text="Help & other information", command=self.displayHelp)
+		self._helpB.grid(row=3,column=0, padx=5, pady=5, sticky="EWS")
+
+		self.grid_columnconfigure(0, weight=1)
+		self.grid_rowconfigure(3, weight=1)
 
 	# Down
 
@@ -51,6 +53,13 @@ class GeneralControls(tkinter.Frame):
 	def searchEnded(self):
 		self._searchControls.searchEnded()
 
+
+
+	def displayHelp(self):
+		window = tkinter.Toplevel(self)
+		window.wm_title("PathVision help")
+		helpText = HelpText(window)
+		helpText.pack(side="top", fill="both", expand=True, padx=5, pady=5)
 
 
 ######################
@@ -226,28 +235,6 @@ class SaveControls(tkinter.Frame):
 		self.loadB.grid(row=0, column=0, sticky="EW", padx=8, pady=5)
 		self.saveB.grid(row=0, column=1, sticky="EW", padx=8, pady=5)
 
-
-
-
-##########################
-## Information controls ##
-##########################
-
-class InformationControls(tkinter.Text):
-
-	def __init__(self, parent):
-		tkinter.Text.__init__(self, parent, width=32, height=20, bg="#ddd", wrap=tkinter.WORD)
-
-		controlStr = "Controls\n\n"
-		controlStr += "Add node: left click on empty space\n\n"
-		controlStr += "Remove node: right click on node\n\n"
-		controlStr += "Add edge: left click on destination followed by the source\n\n"
-		controlStr += "Remove edge: right click on edge\n\n"
-		controlStr += "Change edge value: left click on edge and type\n\n"
-		controlStr += "Change destination: double left click on new destination node"
-
-		self.insert(tkinter.INSERT, controlStr)
-		self.configure(state=tkinter.DISABLED)
 
 
 #####################

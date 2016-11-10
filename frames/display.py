@@ -19,6 +19,7 @@ class Display(tkinter.Frame):
 		tkinter.Frame.__init__(self, parent, app)
 		self.app = app
 
+
 		## Visual set up
 
 		self.figure = plt.figure(facecolor="white")
@@ -111,7 +112,11 @@ class Display(tkinter.Frame):
 				if nDistance <= NODE_SIZE_N:
 					self.app.toggleNodeLabel(n)
 			elif event.button == 1:
-				if nDistance <= NODE_SIZE_N and not self.dragged:
+				if self.dragged:
+					self.app.moveNode(self.dragTarget, event.xdata, event.ydata)
+					self.dragTarget = None
+					self.dragged = False;
+				elif nDistance <= NODE_SIZE_N and not self.dragged:
 					if self.app.AG.selectedEdge is not None:
 						self.app.deselectEdge()
 					if self.app.AG.selectedNode is not None and n != self.app.AG.selectedNode:
@@ -132,13 +137,15 @@ class Display(tkinter.Frame):
 				elif nDistance >= NODE_SIZE_N*2:
 					self.app.addNode(x,y)
 
-			self.dragTarget = None
-			self.dragged = False;
+				
+
+
 
 	def _mouseMove(self, event):
 		if event.xdata and event.ydata and self.dragTarget is not None:
-			self.dragged = True;
 			self.app.moveNode(self.dragTarget, event.xdata, event.ydata)
+			self.dragged = True;
+			
 			
 
 	#############
