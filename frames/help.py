@@ -11,7 +11,8 @@ class HelpText(tkinter.Text):
 		controlStr += "Add edge: left click on destination followed by the source\n\n"
 		controlStr += "Remove edge: right click on edge\n\n"
 		controlStr += "Change edge value: left click on edge and type\n\n"
-		controlStr += "Change destination: double left click on new destination node"
+		controlStr += "Change destination: double left click on new destination node\n\n"
+		controlStr += "Toggle node label: middle click on node"
 
 		self.insert(tkinter.INSERT, controlStr)
 		self.configure(state=tkinter.DISABLED)
