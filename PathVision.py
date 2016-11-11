@@ -235,6 +235,7 @@ class App(tkinter.Frame):
 						adM[i][j] = oldValue
 
 	def _loadSearchResult(self, adM):
+		self.stopCalculating()
 		self.AG.loadFromAdjacencyMatrix(adM)
 
 		# Find source node
@@ -407,6 +408,7 @@ class App(tkinter.Frame):
 			self._load(filename)
 
 	def _load(self, filename):
+		self.stopCalculating()
 		data = pickle.load(open(filename, 'rb'))
 
 		self.AG.G = nx.parse_edgelist(data['edgeList'], nodetype=int, create_using=nx.DiGraph())

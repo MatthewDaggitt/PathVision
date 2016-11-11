@@ -99,3 +99,4 @@ class AugmentedGraph():
 
 		self.sourceNode
 		self.pos = nx.circular_layout(self.G)
+		self.labelled = {n:True for n in self.G}
