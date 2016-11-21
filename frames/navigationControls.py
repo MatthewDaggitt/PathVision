@@ -8,24 +8,24 @@ class NavigationControls(tkinter.Frame):
 		tkinter.Frame.__init__(self, parent)
 		self.app = app
 
-		self.loadB = tkinter.Button(self, text="Load graph", command=app.load)
+		self.loadIcon=tkinter.PhotoImage(file="images/load.gif")
+		self.saveIcon=tkinter.PhotoImage(file="images/save.gif")
+		self.loadIcon = self.loadIcon.subsample(2)
+		self.saveIcon = self.saveIcon.subsample(2)
+
+		self.loadB = tkinter.Button(self, compound=tkinter.LEFT, image=self.loadIcon, text="Load graph", command=app.load)
+		self.saveB = tkinter.Button(self, compound=tkinter.LEFT, image=self.saveIcon, text="Save graph", command=app.save)
 
 		self.startB = tkinter.Button(self, text="<<", command=app.moveToStart)
-		self.startB.configure(state=tkinter.DISABLED)
-
 		self.backB = tkinter.Button(self, text="<", command=app.moveBack)
-		self.backB.configure(state=tkinter.DISABLED)
-
 		self.calculateB = tkinter.Button(self, width=5)
-		
 		self.forwardsB = tkinter.Button(self, text=">", command=app.moveForwards)
-		self.forwardsB.configure(state=tkinter.DISABLED)
-
 		self.endB = tkinter.Button(self, text=">>", command=app.moveToEnd)
+		
+		self.startB.configure(state=tkinter.DISABLED)
+		self.backB.configure(state=tkinter.DISABLED)
+		self.forwardsB.configure(state=tkinter.DISABLED)
 		self.endB.configure(state=tkinter.DISABLED)
-
-		self.saveB = tkinter.Button(self, text="Save graph", command=app.save)
-
 
 		self.loadB.grid(row=0, column=0, padx=8, pady=5)
 		self.startB.grid(row=0,column=1)

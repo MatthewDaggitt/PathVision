@@ -232,24 +232,6 @@ class EdgeEntry(tkinter.Frame):
 
 
 
-
-###################
-## Save controls ##
-###################
-
-class SaveControls(tkinter.Frame):
-
-	def __init__(self, parent, app):
-		tkinter.Frame.__init__(self, parent, borderwidth=borderwidth, relief=tkinter.GROOVE)
-
-		self.loadB = tkinter.Button(self, text="Load graph", command=app.load)
-		self.saveB = tkinter.Button(self, text="Save graph", command=app.save)
-
-		self.loadB.grid(row=0, column=0, sticky="EW", padx=8, pady=5)
-		self.saveB.grid(row=0, column=1, sticky="EW", padx=8, pady=5)
-
-
-
 #####################
 ## Search controls ##
 #####################
@@ -266,7 +248,7 @@ class SearchControls(tkinter.Frame):
 		self.iterationsE = tkinter.Entry(self, width=10)
 		self.iterationsE.insert(0, 1000)
 
-		self.sizeL = tkinter.Label(self, text="Size:")
+		self.sizeL = tkinter.Label(self, text="Nodes:")
 		self.sizeE = tkinter.Entry(self, width=10)
 		self.sizeE.insert(0, 5)
 
