@@ -129,6 +129,8 @@ class AlgebraControls(tkinter.Frame):
 		self.withPathsV.set(v)
 		self.withPathsV.tid = self.withPathsV.trace("w", self.setWithPaths)
 
+		self.abbreviatePathsChB.configure(state=tkinter.NORMAL if v else tkinter.DISABLED)
+
 
 
 
