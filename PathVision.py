@@ -173,6 +173,8 @@ class App(tkinter.Frame):
 		if self.A:
 			self.CA = displayAlgebra.DisplayAlgebra.trackPaths(self.A) if self.withPaths else self.A
 
+		self.stopCalculating()
+
 	def setAbbreviatePaths(self, v):
 		self.abbreviatePaths = v
 		self.draw()
@@ -291,16 +293,16 @@ class App(tkinter.Frame):
 
 	def _createIdentityMatrix(self, n):
 		if self.withPaths:
-			return [[(self.A.A.one, [i]) if i == j else None for j in range(n)] for i in range(n)]
+			return [[(self.A.A.identityRoute, [i]) if i == j else None for j in range(n)] for i in range(n)]
 		else:
-			return [[self.A.A.one if i == j else self.A.A.zero for j in range(n)] for i in range(n)]
+			return [[self.A.A.identityRoute if i == j else self.A.A.invalidRoute for j in range(n)] for i in range(n)]
 
 	def _createAdjacencyMatrix(self):
 		n = len(self.AG.G)
 		if self.withPaths:
 			return [[self.AG.G[i][j]['weight'] if j in self.AG.G[i] else None for j in range(n)] for i in range(n)]
 		else:
-			return [[self.AG.G[i][j]['weight'] if j in self.AG.G[i] else self.A.A.zero for j in range(n)] for i in range(n)]
+			return [[self.AG.G[i][j]['weight'] if j in self.AG.G[i] else self.A.A.invalidEdge for j in range(n)] for i in range(n)]
 
 
 

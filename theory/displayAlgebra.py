@@ -71,7 +71,7 @@ def fVerify(f):
 		return re.match("c\Z", f)
 
 	def matchR(f):
-		return re.match("r\d+\Z", f) and int(f[1:]) <= finf
+		return f == "rinf" or (re.match("r\d+\Z", f) and int(f[1:]) <= finf)
 
 	def matchI(f):
 		return re.match("i\d+\Z", f) and int(f[1:]) <= finf

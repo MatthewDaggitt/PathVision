@@ -3,7 +3,7 @@ import functools
 
 def iterate(algebra, state, idM, adM):
 	n = len(state)
-	newState = [[algebra.zero for _ in range(n)] for _ in range(n)]
+	newState = [[0 for _ in range(n)] for _ in range(n)]
 
 	for i in range(n):
 		for j in range(n):
