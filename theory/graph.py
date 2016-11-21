@@ -33,6 +33,12 @@ class AugmentedGraph():
 		if n == self.sourceNode:
 			self.sourceNode = self.G.nodes()[0]
 
+		if n == self.selectedNode:
+			self.selectedNode = None
+
+		if self.selectedEdge and (self.selectedEdge[0] == n or self.selectedEdge[1] == n):
+			self.selectedEdge = None
+
 		self.relabel()
 
 

@@ -97,7 +97,6 @@ class AlgebraControls(tkinter.Frame):
 		self.abbreviatePathsChB = tkinter.Checkbutton(self, variable=self.abbreviatePathsV)
 		self.abbreviatePathsV.tid = self.abbreviatePathsV.trace("w", self.setAbbreviatePaths)
 
-
 		self.headerL.grid(row=0,column=0,sticky="W")
 		self.algebraL.grid(row=1,column=0,sticky="W")
 		self.algebraCB.grid(row=1,column=1,sticky="EW",padx=(7,5))

@@ -102,47 +102,64 @@ class Display(tkinter.Frame):
 			nDistance, n = self._findNearestNode(x, y, self.app.AG.pos)
 			eDistance, e = self._findNearestEdge(x, y)
 
+			sn = self.app.getSelectedNode()
+			se = self.app.getSelectedEdge()
+
 			if event.button == 3:
 				if nDistance <= NODE_SIZE_N:
 					if len(self.app.AG.G.nodes()) > 1:
 						self.app.deleteNode(n)
 				elif eDistance <= NODE_SIZE_N:
 					self.app.deleteEdge(e)
+
 			if event.button == 2:
 				if nDistance <= NODE_SIZE_N:
 					self.app.toggleNodeLabel(n)
-			elif event.button == 1:
+
+			if event.button == 1:
 				if self.dragged:
 					self.app.moveNode(self.dragTarget, event.xdata, event.ydata)
 					self.dragTarget = None
 					self.dragged = False;
-				elif nDistance <= NODE_SIZE_N and not self.dragged:
-					if self.app.AG.selectedEdge is not None:
-						self.app.deselectEdge()
-					if self.app.AG.selectedNode is not None and n != self.app.AG.selectedNode:
-						self.app.addEdge((self.app.AG.selectedNode, n))
+					return
+
+				if nDistance <= NODE_SIZE_N or eDistance <= NODE_SIZE_N:
+
+					if nDistance <= NODE_SIZE_N:
+						if sn is not None and n != sn:
+							self.app.addEdge((sn, n))
+							self.app.deselectNode()
+						else:
+							self.app.selectNode(n)
+						return
+
+					if sn is not None:
 						self.app.deselectNode()
-					else:
-						self.app.selectNode(n)
-				elif eDistance <= NODE_SIZE_N and not self.dragged:
-					if self.app.AG.selectedNode is not None:
-						self.app.deselectNode()
-					if self.app.AG.selectedEdge is not None:
+					if se is not None:
 						self.app.deselectEdge()
 					self.app.selectEdge(e)
-				elif self.app.AG.selectedNode is not None:
-					self.app.deselectNode()
-				elif self.app.AG.selectedEdge is not None:
+					return
+
+
+
+				if se is not None:
 					self.app.deselectEdge()
-				elif nDistance >= NODE_SIZE_N*2:
+					return
+
+				if sn is not None: 
+					self.app.deselectNode()
+					return
+
+				if nDistance >= NODE_SIZE_N*2:
 					self.app.addNode(x,y)
+					
 
 				
 
 
 
 	def _mouseMove(self, event):
-		if event.xdata and event.ydata and self.dragTarget is not None:
+		if event.xdata and event.ydata and event.button == 1 and self.dragTarget is not None:
 			self.app.moveNode(self.dragTarget, event.xdata, event.ydata)
 			self.dragged = True;
 			
@@ -174,7 +191,7 @@ class Display(tkinter.Frame):
 
 		self.axes.cla()
 		plt.axis('off')
-		
+
 		height = self.canvas.get_tk_widget().winfo_height()
 		width = self.canvas.get_tk_widget().winfo_width()
 		self.axes.set_xlim(-width/200, width/200)

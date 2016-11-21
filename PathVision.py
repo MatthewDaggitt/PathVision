@@ -102,6 +102,8 @@ class App(tkinter.Frame):
 			self.timeChanged()
 		self.draw()
 
+	def getSelectedNode(self):
+		return self.AG.selectedNode
 
 	
 	######################
@@ -140,7 +142,8 @@ class App(tkinter.Frame):
 			self.stopCalculating()
 		self.draw()
 
-	
+	def getSelectedEdge(self):
+		return self.AG.selectedEdge
 
 	#########################
 	## Algebra alterations ##
