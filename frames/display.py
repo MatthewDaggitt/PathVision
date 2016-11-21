@@ -173,9 +173,12 @@ class Display(tkinter.Frame):
 		edgeLabels = nx.get_edge_attributes(G, 'weight')
 
 		self.axes.cla()
-		self.axes.set_xlim([-2,2])
-		self.axes.set_ylim([-2,2])
 		plt.axis('off')
+		
+		height = self.canvas.get_tk_widget().winfo_height()
+		width = self.canvas.get_tk_widget().winfo_width()
+		self.axes.set_xlim(-width/200, width/200)
+		self.axes.set_ylim(-height/200, height/200)
 
 		nx.draw_networkx(G, nodePositions, ax=self.axes, linewidths=nodeOutlineWidths, node_color=nodeColours, width=edgeWidths)
 		nx.draw_networkx_labels(G, offsetPos, ax=self.axes, labels=nodeLabels, font_weight="bold", font_color="r")

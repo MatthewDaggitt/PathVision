@@ -3,9 +3,9 @@ import random
 import pickle
 import threading
 import tkinter
+import time
 
 import networkx as nx
-
 
 from settings import *
 
@@ -57,6 +57,7 @@ class App(tkinter.Frame):
 		self._load("examples/non_linear_counterexample.pv")
 
 		self.master.protocol("WM_DELETE_WINDOW", self.on_close)
+		self.bind("<Configure>", self.on_resize)
 		tkinter.mainloop()
 
 
@@ -392,14 +393,14 @@ class App(tkinter.Frame):
 
 	def _save(self, filename):
 		file = open(filename, 'wb')
-
-		pickle.dump({
+		contents = {
 			"edgeList" : list(nx.generate_edgelist(self.AG.G)),
 			"pos" : self.AG.pos,
 			"source" : self.AG.sourceNode,
 			"algebra" : self.A.name,
 			"withPaths" : self.withPaths
-		}, file)
+		}
+		pickle.dump(contents, file)
 
 
 	def load(self):
@@ -428,6 +429,15 @@ class App(tkinter.Frame):
 	###################
 	## Window events ##
 	###################
+
+	def on_resize(self, e):
+		# Needed because sometimes in multiple resizes
+		# draw gets called before the window resize is complete...
+		def worker():
+			time.sleep(0.01)
+			self.draw()
+
+		threading.Thread(target=worker).start()
 
 	def on_close(self):
 		self.searching = False
