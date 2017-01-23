@@ -75,8 +75,7 @@ class Algebra():
 			if i in p:
 				return None
 
-			# REMOVE!!!!
-			if A.times(e,x,i) == 100:
+			if A.times(e,x,i) == A.invalidRoute:
 				return None
 
 			return (A.times(e,x,i), [i] + p)
@@ -90,18 +89,17 @@ class Algebra():
 
 ## Examples
 
-finf = float("inf")
 def ftimes(f, a, _):
 	for p in f.split(":"):
 		if p == "c":
 			return a
 		if p[0] == "i":
-			return min(finf, a + int(p[1:]))
+			return a + int(p[1:])
 		if p[0] == "r":
-			if p == "rinf":
-				return finf
+			if len(p) == 1:
+				return float("inf")
 			else:
-				return min(finf, max(a, int(p[1:])))
+				return max(a, int(p[1:]))
 		if "t" in p:
 			i = p.index("t")
 			i1 = int(p[:i])
@@ -114,4 +112,4 @@ def ftimes(f, a, _):
 
 minPlus = Algebra(min, lambda x,y,_ : x + y, float('inf'), 0, float('inf'))
 maxMin = Algebra(max, lambda x,y,_ : min(x,y), 0, float('inf'), 0)
-fRing = Algebra(min, ftimes, finf, 0, "rinf")
+fRing = Algebra(min, ftimes, float("inf"), 0, "r")

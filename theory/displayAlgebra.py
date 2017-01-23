@@ -71,13 +71,13 @@ def fVerify(f):
 		return re.match("c\Z", f)
 
 	def matchR(f):
-		return f == "rinf" or (re.match("r\d+\Z", f) and int(f[1:]) <= finf)
+		return f == "r" or (re.match("r\d+\Z", f))
 
 	def matchI(f):
-		return re.match("i\d+\Z", f) and int(f[1:]) <= finf
+		return re.match("i\d+\Z", f)
 
 	def matchT(f):
-		return re.match("(\d+)t(\d+)\Z", f) and int(f[:f.index("t")]) <= int(f[f.index("t")+1:]) <= finf
+		return re.match("(\d+)t(\d+)\Z", f) and int(f[:f.index("t")]) <= int(f[f.index("t")+1:])
 
 	if f:
 		ps = f.split(":")
