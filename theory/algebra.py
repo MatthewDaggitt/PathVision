@@ -1,45 +1,48 @@
-
-
-
 class Algebra():
 
 	def __init__(self, plus, times, invalidRoute, identityRoute, invalidEdge):
-		self.plus = plus
-		self.times = times
-		self.invalidRoute = invalidRoute
-		self.identityRoute = identityRoute
-		self.invalidEdge = invalidEdge
+		self.plus 			= plus
+		self.times 			= times
+		self.invalidRoute 	= invalidRoute
+		self.identityRoute 	= identityRoute
+		self.invalidEdge 	= invalidEdge
 
 	@staticmethod
-	def lexicographicProduct(A1, A2):
+	def lexicographicProduct(A, B):
 
 		def lexPlus(v1, v2):
 			s1, t1 = v1
 			s2, t2 = v2
 
-			s = A1.plus(s1,s2) 
+			s = A.plus(s1,s2) 
 			if s == s1 and s != s2:
 				return (s, t1)
 			if s != s1 and s == s2:
 				return (s, t2)
 			if s == s1 and s == s2:
-				return (s, A2.plus(t1,t2))
-			raise Exception("The plus operator of " + A1.name + " is not selective!")
+				return (s, B.plus(t1,t2))
+			raise Exception("The plus operator of " + A.name + " is not selective!")
 
-		def lexTimes(v1, v2, i):
+		def lexTimes(v1, v2, i, j):
 			s1, t1 = v1
 			s2, t2 = v2
-			return A1.times(s1, s2, i), A2.times(t1, t2, i)
+			return A.times(s1, s2, i, j), B.times(t1, t2, i, j)
 
-		lexInvalidRoute = (A1.invalidRoute, A2.invalidRoute)
-		lexIdentityRoute = (A1.identityRoute, A2.identityRoute)
-		lexInvalidEdge = (A1.invalidEdge, A2.invalidEdge)
-
-		return Algebra(lexPlus, lexTimes, lexInvalidRoute, lexIdentityRoute, lexInvalidEdge)
+		return Algebra(
+			plus 			= lexPlus,
+			times 			= lexTimes,
+			invalidRoute 	= (A.invalidRoute, B.invalidRoute), 
+			identityRoute 	= (A.identityRoute, B.identityRoute), 
+			invalidEdge 	= (A.invalidEdge, B.invalidEdge)
+		)
 
 
 	@staticmethod
 	def trackPaths(A):
+
+		invalidRoute  = None
+		identityRoute = (A.identityRoute, [])
+		invalidEdge   = A.invalidEdge
 
 		def pathsAdd(v,w):
 			if v is None:
@@ -67,49 +70,85 @@ class Algebra():
 			raise Exception("The plus operator of " + A.name + " is not selective!")
 
 
-		def pathsTimes(e,v,i):
-			if e is None or v is None:
-				return None
+		def pathsTimes(e,v,i,j):
+			if e == invalidEdge or v == invalidRoute:
+				return invalidRoute
 
 			x, p = v
+
+			# Remove looping paths
 			if i in p:
-				return None
+				return invalidRoute
 
-			if A.times(e,x,i) == A.invalidRoute:
-				return None
+			# Convert invalid routes
+			y = A.times(e,x,i,j)
+			if y == A.invalidRoute:
+				return invalidRoute
 
-			return (A.times(e,x,i), [i] + p)
+			q = [i] + p if p != [] else [i,j]
+			return (y,q)
 
-		p_one = None
+		return Algebra(
+			plus 			= pathsAdd,
+			times 			= pathsTimes,
+			invalidRoute 	= invalidRoute,
+			identityRoute 	= identityRoute,
+			invalidEdge 	= invalidEdge
+		)
 
-		return Algebra(pathsAdd, pathsTimes, [], None, A.invalidEdge)
+class DisplayAlgebra(Algebra):
 
+	def __init__(self, name, plus, times, invalidRoute, identityRoute, invalidEdge, defaultEdge, randomEdge, validateEdgeString, parseEdgeString, componentAlgebras):
+		Algebra.__init__(self, plus, times, invalidRoute, identityRoute, invalidEdge)
+		self.name         	 	= name
+		self.defaultEdge  	 	= defaultEdge
+		self.validateEdgeString	= validateEdgeString
+		self.parseEdgeString 	= parseEdgeString
+		self.componentAlgebras	= componentAlgebras
+		self.randomEdge   	 	= randomEdge
 
+	def __repr__(self):
+		return self.name
 
+	@staticmethod
+	def lexicographicProduct(A, B):
+		base = Algebra.lexicographicProduct(A, B)
 
-## Examples
+		return DisplayAlgebra(
+			name				= A.name + "-x-" + B.name,
+			plus 				= base.plus,
+			times 				= base.times,
+			invalidRoute        = base.invalidRoute,
+			identityRoute       = base.identityRoute,
+			invalidEdge         = base.invalidEdge,
+			defaultEdge			= [A.defaultEdge , B.defaultEdge],
+			randomEdge			= lambda : (A.randomEdge(), B.randomEdge()),
+			validateEdgeString	= lambda v : A.validateEdgeString(v[0]) and B.validateEdgeString(v[1]),
+			parseEdgeString		= lambda v : (A.parseEdgeString(v[0]), B.parseEdgeString(v[1])),
+			componentAlgebras	= [A, B]
+		)
 
-def ftimes(f, a, _):
-	for p in f.split(":"):
-		if p == "c":
-			return a
-		if p[0] == "i":
-			return a + int(p[1:])
-		if p[0] == "r":
-			if len(p) == 1:
-				return float("inf")
+	@staticmethod
+	def trackPaths(A):
+		base = Algebra.trackPaths(A)
+
+		def randomEdge():
+			edge = A.randomEdge()
+			if edge == A.invalidEdge:
+				return base.invalidEdge
 			else:
-				return max(a, int(p[1:]))
-		if "t" in p:
-			i = p.index("t")
-			i1 = int(p[:i])
-			i2 = int(p[i+1:])
-			if a == i1:
-				return i2
-		
-	print("ERROR " + f + " " + str(a))
+				return edge
 
-
-minPlus = Algebra(min, lambda x,y,_ : x + y, float('inf'), 0, float('inf'))
-maxMin = Algebra(max, lambda x,y,_ : min(x,y), 0, float('inf'), 0)
-fRing = Algebra(min, ftimes, float("inf"), 0, "r")
+		return DisplayAlgebra(
+			name				= A.name + " + paths",
+			plus 				= base.plus,
+			times 				= base.times,
+			invalidRoute        = base.invalidRoute,
+			identityRoute       = base.identityRoute,
+			invalidEdge         = base.invalidEdge,
+			defaultEdge			= A.defaultEdge,
+			randomEdge			= randomEdge,
+			validateEdgeString	= A.validateEdgeString,
+			parseEdgeString		= A.parseEdgeString,
+			componentAlgebras	= [A]
+		)
