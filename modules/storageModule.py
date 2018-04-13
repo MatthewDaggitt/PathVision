@@ -7,14 +7,15 @@ import settings
 ## Controller ##
 ################
 
-class RoutingProblemStorageController():
+class StorageController():
 
 	###########
 	## Setup
 		
-	def __init__(self,mode,parent):
-		self._view = RoutingProblemStorageView(self, parent)
-		self._mode = mode
+	def __init__(self,parent,saveCallback,loadCallback,text):
+		self._view = RoutingProblemStorageView(self, parent, text)
+		self._saveCallback = saveCallback
+		self._loadCallback = loadCallback
 
 	############
 	## Actions
@@ -26,7 +27,7 @@ class RoutingProblemStorageController():
 			
 	def _save(self, filename):
 		file = open(filename, 'wb')
-		data = self._mode.saveRoutingProblem()
+		data = self._saveCallback()
 		pickle.dump(data, file)
 
 
@@ -37,7 +38,7 @@ class RoutingProblemStorageController():
 
 	def _load(self, filename):
 		data = pickle.load(open(filename, 'rb'))
-		self._mode.loadRoutingProblem(data)
+		self._loadCallback(data)
 
 ##########
 ## View ##
@@ -45,7 +46,7 @@ class RoutingProblemStorageController():
 
 class RoutingProblemStorageView(tkinter.Frame):
 	
-	def __init__(self, controller, parent, *args, **kwargs):
+	def __init__(self, controller, parent, text, *args, **kwargs):
 		tkinter.Frame.__init__(self, parent, *args, **kwargs, borderwidth=settings.BORDER_WIDTH, relief=tkinter.GROOVE)
 		self.controller = controller
 
@@ -53,11 +54,11 @@ class RoutingProblemStorageView(tkinter.Frame):
 
 		self.loadIcon=tkinter.PhotoImage(file="images/load.gif")
 		self.loadIcon = self.loadIcon.subsample(2)
-		self.loadB = tkinter.Button(self, compound=tkinter.LEFT, image=self.loadIcon, text="Load routing problem", command=controller.load)
+		self.loadB = tkinter.Button(self, compound=tkinter.LEFT, image=self.loadIcon, text="Load "+text, command=controller.load)
 		
 		self.saveIcon=tkinter.PhotoImage(file="images/save.gif")
 		self.saveIcon = self.saveIcon.subsample(2)
-		self.saveB = tkinter.Button(self, compound=tkinter.LEFT, image=self.saveIcon, text="Save routing problem", command=controller.save)
+		self.saveB = tkinter.Button(self, compound=tkinter.LEFT, image=self.saveIcon, text="Save "+text, command=controller.save)
 
 		self.headerL.grid(	row=0,column=0,sticky="W")
 		self.loadB.grid(	row=1,column=0,sticky="",padx=5,pady=5)

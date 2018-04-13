@@ -4,18 +4,27 @@ import tkinter
 import settings
 import theory.bellmanFord as bellmanFord
 import theory.algebraExamples as algebraExamples
+from theory.pathalogicalAlgebra import *
+from modules.shared.dialogs.size import SizeDialog
 
 ################
 ## Controller ##
 ################
 
-class GraphSearchController():
+class SpecialGraphController():
 
 	def __init__(self, mode, parent):
-		self._model = GraphSearchModel(self)
-		self._view  = GraphSearchView(self, parent)
+		#self._model = SpecialGraphModel(self)
+		self._view  = SpecialGraphView(self, parent)
 		self._mode  = mode
 
+	def generatePathalogicalGraph(self, n):
+		adM = generatePathalogicalAdjacencyMatrix(n)
+
+		self._mode.graphController.loadGraphFromAdjacencyMatrix(adM)
+		self._mode.problemTopologyChanged()
+
+	"""
 	def startSearch(self):
 		runs, size = self._view.getSearchParameters()
 		algebra = self._mode.algebraController.getComputationAlgebra()
@@ -34,12 +43,14 @@ class GraphSearchController():
 		self._mode.graphController.loadGraphFromAdjacencyMatrix(adjacencyMatrix)
 		self._mode.graphController.setSourceNode(sourceNode)
 		self._mode.problemTopologyChanged()
+	"""
 
+"""
 ###########
 ## Model ##
 ###########
 
-class GraphSearchModel():
+class SpecialGraphModel():
 	def __init__(self, controller):
 		self.controller = controller
 
@@ -143,20 +154,22 @@ class GraphSearchModel():
 		self._cleanSearchResult(adM)
 
 		self.controller.updateResult(adM, sourceNode)
+"""
 
 
 ##########
 ## View ##
 ##########
 
-class GraphSearchView(tkinter.Frame):
+class SpecialGraphView(tkinter.Frame):
 
 	def __init__(self, controller, parent):
 		tkinter.Frame.__init__(self, parent, borderwidth=settings.BORDER_WIDTH, relief=tkinter.GROOVE)
 		self.controller = controller
 
-		self.headerL = tkinter.Label(self, text="Graph search", font="TkHeadingFont")
+		self.headerL = tkinter.Label(self, text="Special graphs", font="TkHeadingFont")
 
+		"""
 		self.iterationsL = tkinter.Label(self, text="Iterations:", anchor="e")
 		self.iterationsE = tkinter.Entry(self, width=10)
 		self.iterationsE.insert(0, 1000)
@@ -169,8 +182,10 @@ class GraphSearchView(tkinter.Frame):
 		self.progressDL = tkinter.Label(self, justify=tkinter.LEFT)
 
 		self.searchB = tkinter.Button(self, width=15)
-
+		"""
+		self.generatePathB = tkinter.Button(self, width=22, text="Generate pathalogical example", command=self.generatePathalogical)
 		self.headerL.grid(		row=0,column=0,sticky="W",columnspan=2)
+		"""
 		self.iterationsL.grid(	row=1,column=0,sticky="W",pady=(5,2.5))
 		self.iterationsE.grid(	row=1,column=1,sticky="W",pady=(5,2.5),  padx=(10,0))
 		self.sizeL.grid(		row=2,column=0,sticky="W",pady=(2.5,2.5))
@@ -178,9 +193,12 @@ class GraphSearchView(tkinter.Frame):
 		self.progressL.grid(	row=3,column=0,sticky="W",pady=(2.5,2.5))
 		self.progressDL.grid(	row=3,column=1,sticky="W",pady=(2.5,2.5),padx=(10,0))
 		self.searchB.grid(		row=4,column=0,sticky="", pady=(2.5,5),columnspan=2)
+		"""
+		self.generatePathB.grid(row=1,column=0,sticky="", pady=(2.5,5),columnspan=2)
 		self.columnconfigure(1,weight=1)
+		"""
 
-		self.enterStandbyState()
+		#self.enterStandbyState()
 
 	############
 	## Getters
@@ -206,3 +224,12 @@ class GraphSearchView(tkinter.Frame):
 	def updateProgress(self, progress, bestScore):
 		text = "{} rounds ({}%)".format(bestScore, int(100*progress))
 		self.progressDL.configure(text=text)
+		"""
+
+	def generatePathalogical(self):
+		root = self.controller._mode.app
+		dialog = SizeDialog(root)
+		size = dialog.result
+
+		if size is not None:
+			self.controller.generatePathalogicalGraph(size)

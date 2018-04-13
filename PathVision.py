@@ -35,8 +35,9 @@ class App(tkinter.Frame):
 		self.columnconfigure(0,weight=1)
 
 		self.activate_simulation()
-		self.simulationMode.routingProblemStorageController._load("examples/non_linear_counterexample.pv")
-
+		self.simulationMode.storageController._load("examples/quadratic.pv")
+		#self.explorationMode.storageController._load("test.alg")
+		
 		tkinter.mainloop()
 
 
@@ -77,10 +78,12 @@ class App(tkinter.Frame):
 		self.currentMode = self.simulationMode
 
 	def activate_exploration(self):
-		self._explorationMode.activate()
-		self._simulationMode.grid_remove()
-		self._explorationMode.grid(row=0, column=0, sticky="NESW", padx=(15,5), pady=(15,5))
+		self.simulationMode.grid_remove()
+		self.explorationMode.grid(row=0, column=0, sticky="NESW")
 
+		self.explorationMode.activate()
+		self.currentMode = self.explorationMode
+		
 	###################
 	## Window events ##
 	###################

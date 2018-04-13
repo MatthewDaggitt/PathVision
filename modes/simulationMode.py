@@ -10,9 +10,10 @@ import settings
 
 from modules.graphModule import GraphController
 from modules.graphSearchModule import GraphSearchController
-from modules.routingProblemStorageModule import RoutingProblemStorageController
+from modules.storageModule import StorageController
 from modules.simulationModule import SimulationController
 from modules.algebraModule import AlgebraController
+from modules.specialGraphModule import SpecialGraphController
 
 padding = 10
 
@@ -28,12 +29,15 @@ class SimulationMode(tkinter.Frame):
 		label = tkinter.Label(leftFrame, text="Simulation mode", font=settings.TITLE_FONT)
 		self.algebraController    	= AlgebraController(self, leftFrame)
 		self.graphSearchController 	= GraphSearchController(self, leftFrame)
-		self.routingProblemStorageController = RoutingProblemStorageController(self, leftFrame)
+		self.specialGraphController = SpecialGraphController(self, leftFrame)
+		self.storageController 		= StorageController(leftFrame, self.saveRoutingProblem, self.loadRoutingProblem, "routing problem")
 
 		label.grid(row=0,column=0, sticky="NW", pady=padding)
 		self.algebraController._view.grid(row=1,column=0,sticky="NESW",pady=padding)
 		self.graphSearchController._view.grid(row=2, column=0, sticky="NESW",pady=padding)
-		self.routingProblemStorageController._view.grid(row=3, column=0, sticky="NESW",pady=padding)
+		self.specialGraphController._view.grid(row=3, column=0, sticky="NESW",pady=padding)
+		self.storageController._view.grid(row=4, column=0, sticky="NESW",pady=padding)
+
 
 		# Right hand side
 		self.graphController      	 = GraphController(self, self)
@@ -62,6 +66,7 @@ class SimulationMode(tkinter.Frame):
 
 	def problemTopologyChanged(self):
 		self.simulationController.endSimulation()
+		self.draw()
 	
 	def problemLabellingChanged(self):
 		self.draw()
@@ -75,20 +80,16 @@ class SimulationMode(tkinter.Frame):
 
 		if self.simulationController.isSimulating():
 			state = self.simulationController.getCurrentState()
-			labelling = self.graphController.getNodeLabelling()
 			withPaths = self.algebraController.getWithPaths()
 			abbreviatePaths = self.algebraController.getAbbreviatePaths()
 
 			labels = {}
 			for node in graph.nodes:
 				value = state[node]
-				if labelling[node]:
-					if value is not None and withPaths and abbreviatePaths:
-						x, p = value
-						if len(p) > 3:
-							value = "({}, [{},{}, ..., {}])".format(x,p[0],p[1],p[2])
-				else:
-					value = ""
+				if value is not None and withPaths and abbreviatePaths:
+					x, p = value
+					if len(p) > 3:
+						value = "({}, [{},{}, ..., {}])".format(x,p[0],p[1],p[2])
 				labels[node] = str(value)
 		else:
 			labels = {node:"" for node in graph.nodes}

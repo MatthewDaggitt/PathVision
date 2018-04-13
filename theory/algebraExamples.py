@@ -2,7 +2,7 @@ import random
 import re
 
 from theory.algebra import *
-
+from theory.pathalogicalAlgebra import pathalogicalAlgebra
 
 
 def ftimes(f, a, i, j):
@@ -139,9 +139,11 @@ fRing = DisplayAlgebra(
 	componentAlgebras	= []
 )
 
+
 examples = [
 	minPlus,
 	maxMin,
 	shortestWidest,
-	fRing
+	fRing,
+	pathalogicalAlgebra
 ]
