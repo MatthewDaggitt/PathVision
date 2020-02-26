@@ -89,13 +89,7 @@ class App(tkinter.Frame):
 	###################
 
 	def on_resize(self, e):
-		# Needed because sometimes in multiple resizes
-		# draw gets called before the window resize is complete...
-		def worker():
-			time.sleep(0.01)
-			self.simulationMode.draw()
-
-		threading.Thread(target=worker).start()
+		self.simulationMode.draw()
 
 	def on_close(self):
 		self.destroy()

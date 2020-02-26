@@ -40,11 +40,7 @@ class ExplorationMode(tkinter.Frame):
 		self.columnconfigure(1,weight=1)
 		self.columnconfigure(2,weight=1)
 
-		def worker():
-			time.sleep(0.01)
-			self.graphTopologyChanged()
-
-		threading.Thread(target=worker).start()
+		self.graphTopologyChanged()
 
 	def activate(self):
 		pass

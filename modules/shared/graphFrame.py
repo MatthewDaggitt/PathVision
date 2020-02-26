@@ -38,8 +38,8 @@ class GraphFrame(tkinter.Frame):
 		self.axes = self.figure.add_subplot(111)
 		
 		self.canvas = FigureCanvasTkAgg(self.figure, master=self)
-		self.canvas.show()
 		self.canvas.get_tk_widget().pack(fill=tkinter.BOTH, expand=True)
+		self.canvas.draw()
 
 	def _setupMouseInteractions(self):
 		self.press_callbackID 	= self.figure.canvas.callbacks.connect('button_press_event', self._mouseDown)
